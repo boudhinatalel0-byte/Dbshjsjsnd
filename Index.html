@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boudhina Shop | النسخة الاحترافية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FFD700;
+            --whatsapp: #25D366;
+            --bg: #0b0b0b;
+            --card: #161616;
+            --text: #ffffff;
+            --text-muted: #a0a0a0;
+            --nav-bg: rgba(10, 10, 10, 0.98);
+            --input-bg: #1f1f1f;
+        }
+
+        body {
+            margin: 0; font-family: 'Cairo', sans-serif;
+            background: var(--bg); color: var(--text);
+            transition: 0.3s; padding-bottom: 90px;
+        }
+
+        header {
+            display: flex; justify-content: center; align-items: center;
+            padding: 15px 20px; background: var(--nav-bg); position: sticky; top: 0; z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .brand { font-weight: 800; font-size: 22px; color: var(--primary); }
+
+        .section { display: none; padding: 10px 20px; max-width: 600px; margin: auto; animation: fadeIn 0.4s; }
+        .active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .search-box { position: relative; margin: 15px 0; }
+        .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+        .search-box input { width: 100%; padding: 12px 40px 12px 15px; border-radius: 15px; border: none; background: var(--input-bg); color: var(--text); outline: none; box-sizing: border-box; }
+
+        .card { background: var(--card); border-radius: 20px; overflow: hidden; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); }
+        .card-img { width: 100%; height: 200px; object-fit: cover; }
+        .card-content { padding: 15px; }
+        .price { color: var(--primary); font-weight: 800; font-size: 18px; }
+
+        .method-tag { font-size: 11px; background: rgba(255, 215, 0, 0.1); color: var(--primary); padding: 2px 8px; border-radius: 5px; margin-bottom: 10px; display: inline-block; }
+
+        .btn-main { background: var(--primary); color: #000; padding: 12px; border: none; border-radius: 12px; width: 100%; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px; transition: 0.2s; margin-top: 5px; }
+        .btn-wa { background: var(--whatsapp); color: #fff; }
+        .btn-chat { background: #333; color: #fff; }
+
+        .nav {
+            position: fixed; bottom: 0; width: 100%; height: 70px;
+            background: var(--nav-bg); display: flex; justify-content: space-around; align-items: center;
+            border-top: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px);
+        }
+        .nav-btn { background: none; border: none; color: #666; font-size: 22px; cursor: pointer; }
+        .nav-btn.active-link { color: var(--primary); }
+
+        .chat-msg { background: var(--input-bg); padding: 12px; border-radius: 12px; margin-bottom: 10px; border-right: 4px solid var(--primary); }
+        
+        input, textarea, select { width: 100%; padding: 12px; margin: 8px 0; border-radius: 12px; border: none; background: var(--input-bg); color: var(--text); box-sizing: border-box; font-family: 'Cairo'; }
+        
+        #auth-screen { position: fixed; inset: 0; background: #000; z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; }
+    </style>
+</head>
+<body class="dark-mode">
+
+    <div id="auth-screen">
+        <i class="fa-solid fa-store" style="font-size: 60px; color: var(--primary); margin-bottom: 20px;"></i>
+        <h1 style="margin-bottom: 5px;">Boudhina Shop</h1>
+        <p style="color: #666; margin-bottom: 30px;">سوق اللاعبين الأول في تونس</p>
+        <input type="text" id="reg-name" placeholder="الاسم المستعار">
+        <input type="email" id="reg-email" placeholder="البريد الإلكتروني">
+        <button class="btn-main" onclick="register()">ابدأ رحلتك</button>
+    </div>
+
+    <header><div class="brand">Boudhina Shop</div></header>
+
+    <div id="home" class="section active">
+        <div class="search-box">
+            <i class="fa-solid fa-search"></i>
+            <input type="text" id="searchInput" onkeyup="searchPosts()" placeholder="ابحث عن لعبة (Free Fire, PUBG...)">
+        </div>
+        <div id="postsList"></div>
+    </div>
+
+    <div id="sell" class="section">
+        <h2 style="text-align: center;">انشر عرض جديد</h2>
+        <input type="text" id="gameCat" placeholder="اسم اللعبة">
+        <input type="number" id="price" placeholder="السعر بـ DT">
+        <input type="tel" id="waPhone" placeholder="رقم واتساب للاتفاق">
+        <input type="number" id="d17Num" placeholder="رقم D17 (اختياري للشراء عن بعد)">
+        <select id="dealMethod">
+            <option value="both">عن بعد + تواصل داخلي</option>
+            <option value="remote">عن بعد فقط (D17)</option>
+            <option value="inApp">تواصل داخل التطبيق فقط</option>
+        </select>
+        <textarea id="desc" rows="3" placeholder="وصف الحساب (المستوى، السكنات...)"></textarea>
+        <div style="background: var(--input-bg); padding: 15px; border-radius: 12px; text-align: center; border: 2px dashed #444;">
+            <input type="file" id="fileInput" accept="image/*" onchange="handleImage(event)" style="padding: 0;">
+            <p style="font-size: 12px; color: #666; margin: 5px 0 0 0;">اختر صورة الحساب</p>
+        </div>
+        <button class="btn-main" style="margin-top: 20px;" onclick="savePost()">نشر العرض الآن</button>
+    </div>
+
+    <div id="profile" class="section">
+        <div style="text-align:center; padding: 20px; background: var(--card); border-radius: 20px; margin-bottom: 20px;">
+            <i class="fa-solid fa-circle-user" style="font-size: 50px; color: var(--primary);"></i>
+            <h2 id="profile-name" style="margin: 10px 0 0 0;">المستخدم</h2>
+            <p id="profile-email" style="color:#666; font-size: 14px;"></p>
+        </div>
+        
+        <h3><i class="fa-solid fa-comments"></i> الرسائل الواردة</h3>
+        <div id="messagesList"></div>
+
+        <h3 style="margin-top:25px;"><i class="fa-solid fa-box"></i> عروضي الحالية</h3>
+        <div id="myPostsList"></div>
+        
+        <button class="btn-main" style="background:#ff5252; color:#fff; margin-top:40px;" onclick="logout()">تسجيل الخروج</button>
+    </div>
+
+    <nav class="nav">
+        <button class="nav-btn active-link" onclick="showPage('home', this)"><i class="fa-solid fa-house"></i></button>
+        <button class="nav-btn" onclick="showPage('sell', this)"><i class="fa-solid fa-circle-plus"></i></button>
+        <button class="nav-btn" onclick="showPage('profile', this)"><i class="fa-solid fa-user-gear"></i></button>
+    </nav>
+
+    <script>
+        let currentImg = "";
+
+        // التسجيل
+        function register() {
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            if(!name || !email) return alert("الرجاء ملء البيانات");
+            localStorage.setItem('user', JSON.stringify({name, email}));
+            location.reload();
+        }
+
+        // معالجة الصورة
+        function handleImage(e) {
+            const reader = new FileReader();
+            reader.onload = () => currentImg = reader.result;
+            reader.readAsDataURL(e.target.files[0]);
+        }
+
+        // حفظ المنشور
+        function savePost() {
+            const game = document.getElementById('gameCat').value;
+            const price = document.getElementById('price').value;
+            const phone = document.getElementById('waPhone').value;
+            const d17 = document.getElementById('d17Num').value;
+            const method = document.getElementById('dealMethod').value;
+            const desc = document.getElementById('desc').value;
+            const user = JSON.parse(localStorage.getItem('user'));
+
+            if(!game || !price || !currentImg) return alert("أكمل البيانات والصورة!");
+
+            const posts = JSON.parse(localStorage.getItem('gamePosts') || "[]");
+            posts.unshift({ id: Date.now(), game, price, phone, d17, method, desc, img: currentImg, user: user.name, email: user.email });
+            localStorage.setItem('gamePosts', JSON.stringify(posts));
+            alert("تم النشر في السوق!");
+            location.reload();
+        }
+
+        // البحث
+        function searchPosts() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            document.querySelectorAll('#postsList .card').forEach(c => {
+                c.style.display = c.innerText.toLowerCase().includes(q) ? "" : "none";
+            });
+        }
+
+        // عرض المنشورات
+        function renderPosts() {
+            const posts = JSON.parse(localStorage.getItem('gamePosts') || "[]");
+            const list = document.getElementById('postsList');
+            list.innerHTML = "";
+            
+            posts.forEach(p => {
+                let tag = p.method === 'remote' ? '⚡ شراء عن بعد' : (p.method === 'inApp' ? '💬 تواصل داخلي' : '🔄 متاح عن بعد + داخلي');
+                
+                list.innerHTML += `
+                    <div class="card">
+                        <img class="card-img" src="${p.img}">
+                        <div class="card-content">
+                            <span class="method-tag">${tag}</span>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <b style="font-size:18px">${p.game}</b>
+                                <span class="price">${p.price} DT</span>
+                            </div>
+                            <p style="color:#aaa; font-size:14px; margin: 10px 0;">${p.desc}</p>
+                            
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                                <button class="btn-main btn-wa" onclick="window.open('https://wa.me/${p.phone}')"><i class="fa-brands fa-whatsapp"></i> واتساب</button>
+                                <button class="btn-main btn-chat" onclick="sendInAppMessage('${p.email}', '${p.game}', '${p.d17}')">دردشة</button>
+                            </div>
+                            ${p.d17 ? `<button class="btn-main" style="background:#007bff; color:#fff;" onclick="alert('رقم الـ D17 للبائع: ${p.d17}\\n\\nقم بالتحويل ثم أرسل الوصل في الدردشة')"><i class="fa-solid fa-credit-card"></i> بيانات الدفع</button>` : ''}
+                        </div>
+                    </div>`;
+            });
+        }
+
+        // نظام الدردشة
+        function sendInAppMessage(toEmail, gameName, d17) {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if(user.email === toEmail) return alert("هذا عرضك الخاص!");
+            
+            const msg = prompt(`أرسل رسالة للبائع بخصوص ${gameName}:`);
+            if(!msg) return;
+
+            const allMessages = JSON.parse(localStorage.getItem('appMessages') || "[]");
+            allMessages.push({
+                to: toEmail,
+                from: user.name,
+                game: gameName,
+                text: msg,
+                date: new Date().toLocaleTimeString()
+            });
+            localStorage.setItem('appMessages', JSON.stringify(allMessages));
+            alert("تم إرسال رسالتك!");
+        }
+
+        function renderMessages() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const msgs = JSON.parse(localStorage.getItem('appMessages') || "[]").filter(m => m.to === user.email);
+            const list = document.getElementById('messagesList');
+            list.innerHTML = msgs.length ? "" : "<p style='color:#666; font-size:13px;'>لا توجد رسائل حالياً.</p>";
+            msgs.reverse().forEach(m => {
+                list.innerHTML += `
+                    <div class="chat-msg">
+                        <small style="color:var(--primary)">من: ${m.from} | بخصوص: ${m.game}</small>
+                        <p style="margin:5px 0;">${m.text}</p>
+                        <small style="font-size:9px; color:#555">${m.date}</small>
+                    </div>`;
+            });
+        }
+
+        function renderMyPosts() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const myPosts = JSON.parse(localStorage.getItem('gamePosts') || "[]").filter(p => p.email === user.email);
+            const list = document.getElementById('myPostsList');
+            list.innerHTML = myPosts.length ? "" : "<p style='color:#666; font-size:13px;'>لم تنشر أي عرض بعد.</p>";
+            myPosts.forEach(p => {
+                list.innerHTML += `
+                    <div style="background:#1f1f1f; padding:10px; border-radius:10px; margin-bottom:5px; display:flex; justify-content:space-between;">
+                        <span>${p.game}</span>
+                        <b style="color:var(--primary)">${p.price} DT</b>
+                    </div>`;
+            });
+        }
+
+        function showPage(id, btn) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-link'));
+            btn.classList.add('active-link');
+            if(id === 'home') renderPosts();
+            if(id === 'profile') { renderMessages(); renderMyPosts(); }
+        }
+
+        function logout() { localStorage.removeItem('user'); location.reload(); }
+
+        window.onload = () => {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if(user) {
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('profile-name').innerText = user.name;
+                document.getElementById('profile-email').innerText = user.email;
+                renderPosts();
+            }
+        };
+    </script>
+</body>
+</html>
